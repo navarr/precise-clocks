@@ -12,7 +12,8 @@
     ],
     "require": {
         "php": "~8.0.0",
-        "psr/clock": "@dev"
+        "psr/clock": "@dev",
+        "navarr/wall-clock": "@dev"
     },
     "provide": {
         "psr/clock-implementation": "1.0-dev"

@@ -11,6 +11,7 @@ namespace Navarr\PreciseClock;
 
 use DateTimeImmutable;
 use JetBrains\PhpStorm\Pure;
+use Navarr\WallClock\WallClock;
 use Psr\Clock\ClockInterface;
 
 abstract class AbstractPrecisionClock implements ClockInterface
@@ -22,7 +23,7 @@ abstract class AbstractPrecisionClock implements ClockInterface
     #[Pure]
     public function __construct(ClockInterface $systemClock = null)
     {
-        $this->systemClock = $systemClock ?? new SystemClock();
+        $this->systemClock = $systemClock ?? new WallClock();
     }
 
     abstract protected function getFormatForPrecisionTest(): string;
