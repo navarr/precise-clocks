@@ -1,0 +1,65 @@
+{
+    "name": "navarr/precise-clocks",
+    "description": "An implementation of PSR-20 that is precise within given confines",
+    "license": [
+        "MIT"
+    ],
+    "authors": [
+        {
+            "name": "Navarr Barnier",
+            "email": "me@navarr.me"
+        }
+    ],
+    "require": {
+        "php": "~8.0.0",
+        "psr/clock": "@dev"
+    },
+    "provide": {
+        "psr/clock-implementation": "1.0-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Navarr\\PreciseClock\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Navarr\\PreciseClock\\Test\\": "tests/"
+        }
+    },
+    "repositories": {
+        "dev": {
+            "type": "github",
+            "url": "https://github.com/php-fig/clock"
+        }
+    },
+    "archive": {
+        "exclude": [
+            ".composer/",
+            ".github/",
+            ".idea/",
+            "tests/",
+            ".env",
+            ".gitignore",
+            ".phpunit.result.cache",
+            "composer.lock",
+            "infection.json.dist",
+            "phpcs.xml.dist",
+            "phpstan.neon",
+            "phpunit.xml.dist"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^0.12.96",
+        "infection/infection": "^0.24.0",
+        "squizlabs/php_codesniffer": "^3.6",
+        "jetbrains/phpstorm-attributes": "^1.0",
+        "roave/security-advisories": "dev-master"
+    }
+}
