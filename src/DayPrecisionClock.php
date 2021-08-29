@@ -27,6 +27,6 @@ class DayPrecisionClock extends AbstractPrecisionClock
             'Y-m-d H:i:s u.v',
             $this->systemClock->now()->format('Y-m-d') . ' 0:00:00 0.0'
         );
-        return $result ?? throw ClockCreationException::create(static::class);
+        return $result ?: throw ClockCreationException::create(static::class);
     }
 }
