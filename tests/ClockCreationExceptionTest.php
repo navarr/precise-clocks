@@ -21,5 +21,10 @@ class ClockCreationExceptionTest extends TestCase
             'Could not create ' . $uniqid . ' at ',
             $exception->getMessage()
         );
+
+        $this->assertStringContainsString(
+            date('Y-m-d H:i:s'),
+            $exception->getMessage()
+        );
     }
 }
