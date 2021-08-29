@@ -32,6 +32,6 @@ class HourPrecisionClock extends AbstractPrecisionClock
             'H:i:s u.v',
             $this->systemClock->now()->format('H') . ':00:00 0.0'
         );
-        return $result ?? throw ClockCreationException::create(static::class);
+        return $result ?: throw ClockCreationException::create(static::class);
     }
 }

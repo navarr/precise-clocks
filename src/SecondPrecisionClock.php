@@ -29,6 +29,6 @@ class SecondPrecisionClock extends AbstractPrecisionClock
     protected function createDateTime(): DateTimeImmutable
     {
         $result = DateTimeImmutable::createFromFormat('H:i:s u.v', $this->systemClock->now()->format('H:i:s') . ' 0.0');
-        return $result ?? throw ClockCreationException::create(static::class);
+        return $result ?: throw ClockCreationException::create(static::class);
     }
 }
