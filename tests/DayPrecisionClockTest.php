@@ -5,21 +5,23 @@
  * Source available under the MIT License
  */
 
+declare(strict_types=1);
+
 namespace Navarr\PreciseClock\Test;
 
 use DateInterval;
 use DateTimeImmutable;
 use Navarr\PeriodicAdvancement\AdvancingClock;
-use Navarr\PreciseClock\HourPrecisionClock;
+use Navarr\PreciseClock\DayPrecisionClock;
 use Navarr\SpecificTime\SpecificTime;
 use PHPUnit\Framework\TestCase;
 
-class HourPrecisionClockTest extends TestCase
+class DayPrecisionClockTest extends TestCase
 {
     public function testCallsWithinTheSameHourReturnsTheSameObject(): void
     {
         $staticClock = new SpecificTime(new DateTimeImmutable());
-        $precisionClock = new HourPrecisionClock($staticClock);
+        $precisionClock = new DayPrecisionClock($staticClock);
 
         $objectA = $precisionClock->now();
         $objectB = $precisionClock->now();
@@ -32,8 +34,8 @@ class HourPrecisionClockTest extends TestCase
 
     public function testCallInTheNextHourDoesNotReturnTheSameObject(): void
     {
-        $advancingClock = new AdvancingClock(new DateInterval('PT1H'));
-        $precisionClock = new HourPrecisionClock($advancingClock);
+        $advancingClock = new AdvancingClock(new DateInterval('P1D'));
+        $precisionClock = new DayPrecisionClock($advancingClock);
 
         $objectA = $precisionClock->now();
         $objectB = $precisionClock->now();

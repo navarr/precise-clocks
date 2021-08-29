@@ -9,18 +9,19 @@ declare(strict_types=1);
 
 namespace Navarr\PreciseClock\Test;
 
+use DateInterval;
+use DateTimeImmutable;
+use Navarr\PeriodicAdvancement\AdvancingClock;
 use Navarr\PreciseClock\SecondPrecisionClock;
+use Navarr\SpecificTime\SpecificTime;
 use PHPUnit\Framework\TestCase;
 
 class SecondPrecisionClockTest extends TestCase
 {
     public function testCallsWithinTheSameSecondReturnsTheSameObject(): void
     {
-        $precisionClock = new SecondPrecisionClock();
-
-        while ((int)date('v') > 100) {
-            /* loop until we have enough time */
-        }
+        $specificTimeClock = new SpecificTime(new DateTimeImmutable());
+        $precisionClock = new SecondPrecisionClock($specificTimeClock);
 
         $objectA = $precisionClock->now();
         $objectB = $precisionClock->now();
@@ -33,14 +34,10 @@ class SecondPrecisionClockTest extends TestCase
 
     public function testCallInTheNextSecondDoesNotReturnTheSameObject(): void
     {
-        $precisionClock = new SecondPrecisionClock();
+        $periodicallyAdvancingClock = new AdvancingClock(new DateInterval('PT1S'));
+        $precisionClock = new SecondPrecisionClock($periodicallyAdvancingClock);
 
         $objectA = $precisionClock->now();
-        $second = (int)date('s');
-
-        while ((int)date('s') === $second) {
-            /* loop until next second */
-        }
         $objectB = $precisionClock->now();
 
         $this->assertNotEquals(
