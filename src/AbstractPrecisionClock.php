@@ -10,15 +10,26 @@ declare(strict_types=1);
 namespace Navarr\PreciseClock;
 
 use DateTimeImmutable;
+use JetBrains\PhpStorm\Pure;
+use Psr\Clock\ClockInterface;
 
-abstract class AbstractPrecisionClock implements \Psr\Clock\ClockInterface
+abstract class AbstractPrecisionClock implements ClockInterface
 {
     private DateTimeImmutable $lastReturnedTime;
+
+    protected ClockInterface $systemClock;
+
+    #[Pure]
+    public function __construct(ClockInterface $systemClock = null)
+    {
+        $this->systemClock = $systemClock ?? new SystemClock();
+    }
 
     abstract protected function getFormatForPrecisionTest(): string;
 
     abstract protected function createDateTime(): DateTimeImmutable;
 
+    #[Pure]
     public function now(): DateTimeImmutable
     {
         $now = $this->createDateTime();

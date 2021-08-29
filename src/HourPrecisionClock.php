@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Navarr\PreciseClock;
 
 use DateTimeImmutable;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * Clock that is guaranteed to return the same object so long as it is within the same hour.
@@ -18,13 +19,19 @@ use DateTimeImmutable;
  */
 class HourPrecisionClock extends AbstractPrecisionClock
 {
+    #[Pure]
     protected function getFormatForPrecisionTest(): string
     {
         return 'Y-m-d H';
     }
 
+    #[Pure]
     protected function createDateTime(): DateTimeImmutable
     {
-        return DateTimeImmutable::createFromFormat('H:i:s u.v', date('H') . ':00:00 0.0');
+        $result = DateTimeImmutable::createFromFormat(
+            'H:i:s u.v',
+            $this->systemClock->now()->format('H') . ':00:00 0.0'
+        );
+        return $result ?? throw ClockCreationException::create(static::class);
     }
 }
