@@ -12,11 +12,11 @@ namespace Navarr\PreciseClock;
 use JetBrains\PhpStorm\Pure;
 use RuntimeException;
 
-class ClockCreationException extends RuntimeException
+final class ClockCreationException extends RuntimeException
 {
     #[Pure]
     public static function create(string $clockClassName): ClockCreationException
     {
-        return new static('Could not create ' . $clockClassName . ' at ' . date('Y-m-d H:i:s u.v'));
+        return new ClockCreationException('Could not create ' . $clockClassName . ' at ' . date('Y-m-d H:i:s u.v'));
     }
 }
