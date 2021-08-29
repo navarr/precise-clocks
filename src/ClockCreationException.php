@@ -15,7 +15,7 @@ use RuntimeException;
 class ClockCreationException extends RuntimeException
 {
     #[Pure]
-    static function create(string $clockClassName): ClockCreationException
+    public static function create(string $clockClassName): ClockCreationException
     {
         return new static('Could not create ' . $clockClassName . ' at ' . date('Y-m-d H:i:s u.v'));
     }
