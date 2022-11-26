@@ -2,14 +2,33 @@ name: Continuous Integration
 on: [push]
 
 jobs:
-  phpunit:
-    name: Unit Tests
+  php-matrix:
+    name: Generate Matrix
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+      - id: matrix
+        run: |
+          php .github/workflows/commit-matrix.php >> $GITHUB_OUTPUT
+      - run: echo "Matrix:\n";echo '${{ steps.matrix.outputs.matrix }}'
+  phpunit:
+    name: Unit Tests (${{ matrix.php }})
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    needs: php-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.php-matrix.outputs.matrix)}}
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
+          php-version: ${{ matrix.php }}
           coverage: xdebug
           tools: composer:v2
 
@@ -24,50 +43,68 @@ jobs:
 
       - name: Upload to CodeCov
         uses: codecov/codecov-action@v1
+        if: ${{ matrix.definitive }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
           fail_ci_if_error: true
 
   phpstan:
-    name: Static Analysis Check
+    name: Static Analysis Check (${{ matrix.php }})
     runs-on: ubuntu-latest
-    container:
-      image: davidalger/php:8.0
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Install Dependencies
-        run: composer2 install
-
-      - name: Run PHPStan
-        run: vendor/bin/phpstan
-
-  phpcs:
-    name: Code Style (PSR-12)
-    runs-on: ubuntu-latest
-    container:
-      image: davidalger/php:8.0
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Install Dependencies
-        run: composer2 install
-
-      - name: PHP Code Sniffer
-        run: vendor/bin/phpcs
-
-  infection:
-    name: Infection Check
-    runs-on: ubuntu-latest
-    continue-on-error: true
+    continue-on-error: ${{ matrix.experimental }}
+    needs: php-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.php-matrix.outputs.matrix)}}
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: composer install
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse
+
+  phpcs:
+    name: Code Style (PSR-12)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          tools: composer:v2, cs2pr
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: composer install
+
+      - name: PHP Code Sniffer
+        run: vendor/bin/phpcs --report=checkstyle | cs2pr
+
+  infection:
+    name: Infection Check (${{ matrix.php }})
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    needs: php-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.php-matrix.outputs.matrix)}}
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
           coverage: xdebug
           tools: composer:v2
 
