@@ -21,7 +21,7 @@ abstract class AbstractPrecisionClock implements ClockInterface
     protected ClockInterface $systemClock;
 
     #[Pure]
-    public function __construct(ClockInterface $systemClock = null)
+    public function __construct(?ClockInterface $systemClock = null)
     {
         $this->systemClock = $systemClock ?? new WallClock();
     }

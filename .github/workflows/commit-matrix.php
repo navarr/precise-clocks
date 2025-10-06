@@ -5,9 +5,9 @@
  * Source available under the MIT License
  */
 
-const VERSIONS = [8.0, 8.1, 8.2];
-const DEFINITIVE_VERSION = 8.1;
-const EXPERIMENTAL_VERSIONS = [8.2];
+const VERSIONS = [8.2, 8.3, 8.4];
+const DEFINITIVE_VERSION = 8.4;
+const EXPERIMENTAL_VERSIONS = [];
 
 $matrix = [];
 
